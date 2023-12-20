@@ -16,16 +16,27 @@ X 6.- escuchar evento sobre el botón de buscar
 X 7.- en la handleClick-->  volver a pedir información al servidor --->  meterlo en un función fetch()
 https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${variable}
 X 8.- Pintar las nuevas en el HTML  (ejecutar la función de pintar listado)
-9.- Escuchar evento sobre todas las bebidas, y al hacer click (la img, titulo, o lo quieran) meter un array
-    .- Verificar si  ya lo tengo en fav
-    .- Si no está lo añado
-    .- y sino lo saco
-10.- Pintar el listado de favoritos , añadir una X para eliminar
+X 9.- Escuchar evento sobre todas las bebidas, y al hacer click (la img, titulo, o lo quieran) meter un array
+    X .- Verificar si  ya lo tengo en fav
+    X .- Si no está lo añado
+    X .- Y si, si está lo saco
+X 10.- Pintar el listado de favoritos , añadir una X para eliminar
 11.-  Escuchar eventos sobre todas las X --> al hacer click eliminar del array, volver a pintar el array de fav
+*/
+
+/*
+  refactorizar
+  Unificar la función de renderizado
+  1.- recibir el array a recorrer
+  2.- recibir la sección donde vas a pintar
+  3.- recibir un parámetro que indique si  el array es el de fav o no.
+  4.- en caso que sea el array de favoritos  se poner el icono de la basura 
+
 */
 const sectionDrinks = document.querySelector('.drinks');
 const sectionFavorites = document.querySelector('.favorite');
 let drinksList = [];
+let drinkFavorite = [];
 let drink = 'tequila';
 const inputSearch = document.querySelector('.searchDrink');
 const btnSearch = document.querySelector('.btnSearch');
@@ -45,12 +56,69 @@ const renderDrinks = (drinksList) => {
   sectionDrinks.innerHTML = '';
   for (const eachDrink of drinksList) {
     sectionDrinks.innerHTML += `
-            <article class="card">
+            <article class="card" id="${eachDrink.idDrink}">
                 <img src="${eachDrink.strDrinkThumb}" class="img"/>
                 <h3> ${eachDrink.strDrink}</h3>
             </article>
         `;
   }
+  const allCards = document.querySelectorAll('.card');
+  for (const card of allCards) {
+    card.addEventListener('click', handleClickFavorite);
+  }
+};
+
+const renderDrinksFavorite = (drinks) => {
+  sectionFavorites.innerHTML = '';
+  for (const eachDrink of drinks) {
+    sectionFavorites.innerHTML += `
+            <article class="card fav ">
+                <img src="${eachDrink.strDrinkThumb}" class="img"/>
+                <h3> ${eachDrink.strDrink}</h3>
+                <p class="delete" id="${eachDrink.idDrink}" > 
+                <i class="fa-regular fa-trash-can"></i>
+                 </p>
+            </article>
+        `;
+  }
+  const allX = document.querySelectorAll('.delete');
+  for (const x of allX) {
+    x.addEventListener('click', handleDeleteFavorite);
+  }
+};
+const handleDeleteFavorite = (event) => {
+  console.log(event.target.id);
+  const indexElement = drinkFavorite.findIndex(
+    (drink) => drink.idDrink === event.target.id
+  );
+  drinkFavorite.splice(indexElement, 1);
+  renderDrinksFavorite(drinkFavorite);
+};
+const handleClickFavorite = (event) => {
+  //console.log(event.target); //el elemento sobre  el cual ocurrio el evento CLICK
+  //console.log(event.currentTarget.id); //el elemento sobre el cual  escuchando el evento <article>
+  const clickedId = event.currentTarget.id;
+  // buscar el elemento clicado dentro del array de favoritos
+  const findElement = drinkFavorite.find(
+    (drink) => drink.idDrink === clickedId
+  );
+  //obtengo toda la informacion de la bebida clicada
+  const drinkClicked = drinksList.find((drink) => drink.idDrink === clickedId);
+
+  console.log(findElement);
+  //falsy -->  undefined, null, 0,  ""
+  //findElement === undefined
+  if (!findElement) {
+    drinkFavorite.push(drinkClicked);
+  } else {
+    // findIndex > busca la posición de un elemento dentro del array
+    const indexElement = drinkFavorite.findIndex(
+      (drink) => drink.idDrink === clickedId
+    );
+    drinkFavorite.splice(indexElement, 1);
+  }
+  renderDrinksFavorite(drinkFavorite);
+  console.log(drinkFavorite);
 };
 
 const getDataFromAPI = async (nameDrink) => {

@@ -2,7 +2,17 @@
     width: 100px;
 }
 .card{
-    width: 80%;
+ 
     box-shadow: 10px 10px 5px grey;
     border-radius: 5px;
+}
+main{
+    display: flex;
+    gap:50px;
+}
+.fav{
+    background-color: cadetblue;
+}
+.delete{
+    cursor: pointer;
 }

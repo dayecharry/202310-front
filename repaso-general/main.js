@@ -31,7 +31,6 @@ X 10.- Pintar el listado de favoritos , añadir una X para eliminar
   2.- recibir la sección donde vas a pintar
   3.- recibir un parámetro que indique si  el array es el de fav o no.
   4.- en caso que sea el array de favoritos  se poner el icono de la basura 
-
 */
 const sectionDrinks = document.querySelector('.drinks');
 const sectionFavorites = document.querySelector('.favorite');
